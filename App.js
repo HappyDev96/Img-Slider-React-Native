@@ -8,9 +8,8 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button} from 'react-native';
-import Slideshow from 'react-native-image-slider-show';
-// import ModalExample from './components/modal/index.js'
+import {Platform, StyleSheet, Text, View, Button, Alert} from 'react-native';
+import Gallery from 'react-native-image-gallery';
 import ModalExample from './components/modal/index.js'
 
 const instructions = Platform.select({
@@ -27,19 +26,14 @@ export default class App extends Component<Props> {
     display: false,
     position: 1,
     dataSource: [
-      {
-        url: 'http://localhost:8081/imgs/1.png',
-      }, {
-        url: 'http://localhost:8081/imgs/2.png',
-      }, {
-        url: 'http://localhost:8081/imgs/3.png',
-      },
+      {source: { uri: 'http://lorempixel.com/output/cats-q-c-640-480-1.jpg' }},
+      {source: { uri: 'http://lorempixel.com/output/cats-q-c-640-480-2.jpg' }},
+      {source: { uri: 'http://lorempixel.com/output/cats-q-c-640-480-3.jpg' }},
+      {source: { uri: 'http://lorempixel.com/output/cats-q-c-640-480-4.jpg' }},
+      {source: { uri: 'http://lorempixel.com/output/cats-q-c-640-480-5.jpg' }},
+      {source: { uri: 'http://lorempixel.com/output/cats-q-c-640-480-6.jpg' }}
     ],
   }
-
-  // triggerModal() {
-  //   this.setState( { display: true } );
-  // }
 
   toggleModal = () => {
     this.setState({
@@ -47,17 +41,19 @@ export default class App extends Component<Props> {
     });
   }
 
-  // onClose() {
-  //   this.setState({ display: false } );
-  // }
-
   render() {
+
     return (
       <View style={styles.container}>
-        <Slideshow 
-          dataSource={this.state.dataSource}
-          onPositionChanged={ position => this.setState({ position: position }) }
-          onPress = { () => this.toggleModal() } />
+        
+        <Gallery
+          initialPage={this.state.position}
+          style={{ flex: 1, backgroundColor: 'black' }}
+          images={this.state.dataSource}
+          onPageSelected={(index) => { this.setState({ position: index}) }}
+          onSingleTapConfirmed={() => this.toggleModal() }
+        />
+
         <ModalExample
           data = {this.state.dataSource} 
           display={this.state.display}
