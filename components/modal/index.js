@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, Text, TouchableHighlight, View, StyleSheet, Alert} from 'react-native'
-import Gallery from 'react-native-image-gallery';
+import { Modal, Text, TouchableHighlight, View, StyleSheet, Alert, Image, Dimensions} from 'react-native'
+import Swiper from 'react-native-swiper';
+
+const BannerWidth = Dimensions.get('window').width;
+const BannerHeight = 260;
 
 class ModalExample extends Component {
 
@@ -12,16 +15,38 @@ class ModalExample extends Component {
     }
   }
 
+  renderPage(image, index) {
+      return (
+          <View key={index}>
+            <Image style={{ width: BannerWidth, height: BannerHeight }} source={{ uri: image }} />
+          </View>
+      );
+  }
+
+  renderPagination = (index, total, context) => {
+    return (
+      <View style={styles.paginationStyle}>
+        <Text style={{ color: 'grey' }}>
+          <Text style={styles.paginationText}>{index + 1}</Text>/{total}
+        </Text>
+      </View>
+    )
+  }
+
   render() {
       return (
          <Modal visible={ this.props.display } animationType = "slide" 
          onRequestClose={ () => { this.props.handleClose() }} >
-          <View style={styles.container}>
-            <Gallery
-            initialPage={this.props.position}
-            style={{ flex: 1, backgroundColor: '#ede3f2' }}
-            images={this.props.data}
-            />
+          <View style={{ flex:1}}>
+            <Swiper 
+              index={this.props.position}
+              style={styles.wrapper} 
+              showsButtons={true} 
+              renderPagination={this.renderPagination}
+            >
+              {this.props.data.map((image, index) => this.renderPage(image, index))}
+            </Swiper>
+
           </View>
         </Modal>
       )
@@ -46,5 +71,17 @@ const styles = StyleSheet.create ({
    text: {
       color: '#3f2949',
       marginTop: 10
-   }
+   },
+   wrapper: {
+    flex: 1, backgroundColor: 'black'
+   },
+   paginationStyle: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10
+  },
+  paginationText: {
+    color: 'white',
+    fontSize: 20
+  }
 })
